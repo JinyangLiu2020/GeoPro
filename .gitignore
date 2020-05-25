@@ -1,6 +1,5 @@
 /.history
 /data/*.csv
-/data/*.txt
 *.history
 **/*.csv
 **/*.txt
