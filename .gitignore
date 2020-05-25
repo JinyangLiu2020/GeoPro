@@ -2,7 +2,6 @@
 /data/*.csv
 *.history
 **/*.csv
-**/*.txt
 **/*.xlsx
 .vs
 /data/*.rar
