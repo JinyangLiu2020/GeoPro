@@ -78,3 +78,38 @@ def cc_to_ic(x_c, y_c, z_c):
         direction = 4
 
     return x_i, y_i, direction
+
+def lla_to_cc(lat,lon,,alt,intensity):
+    Img_front = np.zeros((resolution,resolution))
+    Img_back = np.zeros((resolution,resolution))
+    Img_left = np.zeros((resolution,resolution))
+    Img_right = np.zeros((resolution,resolution))
+    Img_front_with_intensity = np.zeros((resolution,resolution))
+    Img_back_with_intensity = np.zeros((resolution,resolution))
+    Img_left_with_intensity = np.zeros((resolution,resolution))
+    Img_right_with_intensity = np.zeros((resolution,resolution))
+    x, y, z, cos_phi, sin_phi, cos_lambda, sin_lambda = lla_to_ecef(lat,lon,alt)
+    e, n, u = ecef_to_enu(x,y,z,cos_phi, sin_phi, cos_lambda, sin_lambda)
+    x_c, y_c, z_c = enu_to_cc(e, n, u)
+    x_i, y_i, direction = cc_to_ic(x_c, y_c, z_c)
+    if direction == 1:
+        Img_front[x_i][y_i] = 255
+        Img_front_with_intensity[x_i][y_i] = intensity
+    if direction == 2:
+        Img_back[x_i][y_i] = 255
+        Img_back_with_intensity[x_i][y_i] = intensity
+    if direction == 3:
+        Img_left[x_i][y_i] = 255
+        Img_left_with_intensity[x_i][y_i] = intensity
+    if direction == 4:
+        Img_right[x_i][y_i] = 255
+        Img_right_with_intensity[x_i][y_i] = intensity
+
+    cv2.imwrite('front.png',Img_front)
+    cv2.imwrite('back.png',Img_back)
+    cv2.imwrite('right.png',Img_right)
+    cv2.imwrite('left.png',Img_left)
+    cv2.imwrite('front_with_intensity.png',Img_front_with_intensity)
+    cv2.imwrite('back_with_intensity.png',Img_back_with_intensity)
+    cv2.imwrite('right_with_intensity.png',Img_right_with_intensity)
+    cv2.imwrite('left_with_intensity.png',Img_left_with_intensity)
