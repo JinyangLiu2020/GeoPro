@@ -79,7 +79,7 @@ def cc_to_ic(x_c, y_c, z_c):
 
     return x_i, y_i, direction
 
-def lla_to_cc(lat,lon,,alt,intensity):
+def lla_to_cc(lat,lon,alt,intensity):
     Img_front = np.zeros((resolution,resolution))
     Img_back = np.zeros((resolution,resolution))
     Img_left = np.zeros((resolution,resolution))
@@ -113,3 +113,6 @@ def lla_to_cc(lat,lon,,alt,intensity):
     cv2.imwrite('back_with_intensity.png',Img_back_with_intensity)
     cv2.imwrite('right_with_intensity.png',Img_right_with_intensity)
     cv2.imwrite('left_with_intensity.png',Img_left_with_intensity)
+
+if __name__ == "__main__":
+    pass
