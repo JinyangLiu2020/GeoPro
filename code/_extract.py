@@ -1,9 +1,20 @@
 # Camera location:45.90414414, 11.02845385
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
 
-def calDis(x1,y1,x2=9.404743650520686e-11,y2=-1.7409718111593975e-10):
-    return ((x1-x2)**2+(y1-y2)**2)**0.5
+trajectery = [[-31.494925251842638, -60.13946825281302],
+[-25.816078275037732, -49.38318021009172],
+[-21.756777818577362, -41.666926801333915],
+[-17.47865374782263, -33.47493469711093],
+[-11.861159551419213, -22.70418328163622],
+[-5.639180912733428, -10.766316407903346],
+[-3.0035279818818594e-11, 3.3413050104513786e-10],
+[3.6968461077552655, 7.024896507340007],
+[9.401178150010027, 17.79122182159975]]
+
+def calDis(x1,y1):
+    return min([((x1-p[0])**2+(y1-p[1])**2)**0.5 for p in trajectery])
 
 def threshold(altitude, greyscale, distance):
     points_int = np.loadtxt('points_int.txt')
@@ -41,7 +52,42 @@ def clusterLaneMarking(filename):
         color_cluster.append(colored_point)
     np.savetxt('color_cluster.txt', np.array(color_cluster))
 
-        
+def fitLaneMarking(filename):
+    points = np.loadtxt(filename)
+    row, col = points.shape
+    x = points[:,0].reshape(row,1)
+    y = points[:,1].reshape(row,1)
+    print(min(x), max(x))
+
+    from sklearn import linear_model
+    ransac = linear_model.RANSACRegressor(residual_threshold=2)
+    ransac.fit(x, y)
+    inlier_mask = ransac.inlier_mask_
+
+    # samples = np.arange(10000)/10000
+    # results = np.apply_along_axis(ransac.predict, 1, samples.reshape())
+    # np.savetxt('res', results)
+
+    x = x[inlier_mask]
+    y = y[inlier_mask]
+    valid_row = x.shape[0]
+    print(x.shape, y.shape)
+    regr = linear_model.LinearRegression()
+    regr.fit(x, y)
+
+    c = regr.coef_[0][0]
+    i = regr.intercept_[0]
+    print(c, i)
+
+    p1 = [-35, c*(-35)+i]
+    p2 = [15, c*15+i]
+    print(type(x), type(y))
+
+    # plt.scatter(x.reshape(valid_row),y.reshape(valid_row))
+    plt.scatter([1,2,3],[4,5,6])
+
+    plt.plot(p1, p2, c='red')
+    plt.show()
 
 def findLaneMarking(filename):
     img = cv2.imread(filename)
