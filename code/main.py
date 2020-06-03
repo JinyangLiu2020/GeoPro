@@ -13,3 +13,4 @@ if __name__ == "__main__":
     # findLaneMarking('back_equ.png')
     # clusterLaneMarking('lane_marking_int.txt')
     fitLaneMarking('lane_marking_int.txt')
+    visualizeFit()

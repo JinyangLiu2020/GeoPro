@@ -1,7 +1,7 @@
 # Camera location:45.90414414, 11.02845385
+import matplotlib.pyplot as plt
 import numpy as np
 import cv2
-import matplotlib.pyplot as plt
 
 trajectery = [[-31.494925251842638, -60.13946825281302],
 [-25.816078275037732, -49.38318021009172],
@@ -68,25 +68,29 @@ def fitLaneMarking(filename):
     # results = np.apply_along_axis(ransac.predict, 1, samples.reshape())
     # np.savetxt('res', results)
 
-    x = x[inlier_mask]
-    y = y[inlier_mask]
-    valid_row = x.shape[0]
-    print(x.shape, y.shape)
+    x_i = x[inlier_mask]
+    y_i = y[inlier_mask]
+    valid_row = x_i.shape[0]
     regr = linear_model.LinearRegression()
-    regr.fit(x, y)
+    regr.fit(x_i, y_i)
 
     c = regr.coef_[0][0]
     i = regr.intercept_[0]
-    print(c, i)
 
-    p1 = [-35, c*(-35)+i]
-    p2 = [15, c*15+i]
-    print(type(x), type(y))
+    np.savetxt('x',x.reshape(row))
+    np.savetxt('y',y.reshape(row))
+    return c, i
 
-    # plt.scatter(x.reshape(valid_row),y.reshape(valid_row))
-    plt.scatter([1,2,3],[4,5,6])
+def visualizeFit():
+    x = np.loadtxt('x')
+    y = np.loadtxt('y')
 
-    plt.plot(p1, p2, c='red')
+    c, i = 1.890783747977774, -3.914180282266038
+    p1 = [-35, 15]
+    p2 = [c*(-35)+i, c*15+i]
+
+    plt.plot(p1, p2)
+    plt.scatter(x, y)
     plt.show()
 
 def findLaneMarking(filename):
