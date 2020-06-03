@@ -5,30 +5,33 @@ import numpy as np
 fig = plt.figure()
 ax = Axes3D(fig)
 
-# i = 0
-# with open('data\point_cloud.fuse') as cloud_points_file:
-#     lines = cloud_points_file.readlines()
-#     points = []
-#     for line in lines:
-#         if i%3 == 1:
-#             point = [float(x) for x in line.split(' ')]
-#             points.append(point)
-#         i+=1
-#     points = np.array(points)
-#     print(points.shape)
-#     x = points[:,0]
-#     y = points[:,1]
-#     z = points[:,2]
-#     ax.scatter(x,y,z,s=0.1, alpha=0.5)
-#     plt.show()
+def fakeTrans():
+    with open('data\point_cloud.fuse') as cloud_points_file:
+        lines = cloud_points_file.readlines()
+        points = []
+        for line in lines:
+            point = [float(x) for x in line.split(' ')]
+            point[0] *= 30000
+            point[1] *= 30000
+            point[-1] = 200 if point[-1]>50 else 0
+            point.append(point[-1])
+            point.append(point[-1])
+            points.append(point)
+        points = np.array(points)[:,:]
+        np.savetxt('points_int.txt', points)
 
-with open('data\point_cloud.fuse') as cloud_points_file:
-    lines = cloud_points_file.readlines()
-    points = []
-    for line in lines:
-        point = [float(x) for x in line.split(' ')]
-        point[0] *= 30000
-        point[1] *= 30000
-        points.append(point)
-    points = np.array(points)[:,:3]
-    np.savetxt('points.txt', points)
+# Camera location:45.90414414, 11.02845385
+def calDis(x1,y1,x2=45.90414414*30000,y2=11.02845385*30000):
+    return ((x1-x2)**2+(y1-y2)**2)**0.5
+
+def threshold(latitude, greyscale, distance):
+    points_int = np.loadtxt('points_int.txt')
+    lane_markings = []
+    for line in points_int:
+        if line[2] < latitude and line[3] > greyscale and calDis(line[0], line[1])<distance:
+            lane_markings.append(line)
+    lane_markings = np.array(lane_markings)
+    np.savetxt('lane_marking.txt', lane_markings)
+
+if __name__ == "__main__":
+    threshold(226, 100, 5)
