@@ -63,20 +63,16 @@ def fitLaneMarking(filename):
     ransac = linear_model.RANSACRegressor(residual_threshold=2)
     ransac.fit(x, y)
     inlier_mask = ransac.inlier_mask_
-
-    # samples = np.arange(10000)/10000
-    # results = np.apply_along_axis(ransac.predict, 1, samples.reshape())
-    # np.savetxt('res', results)
-
-    x_i = x[inlier_mask]
-    y_i = y[inlier_mask]
+    outlier_mask = ~inlier_mask
+    x_i = x[outlier_mask]
+    y_i = y[outlier_mask]
     valid_row = x_i.shape[0]
     regr = linear_model.LinearRegression()
     regr.fit(x_i, y_i)
 
     c = regr.coef_[0][0]
     i = regr.intercept_[0]
-
+    print(c,i)
     np.savetxt('x',x.reshape(row))
     np.savetxt('y',y.reshape(row))
     return c, i
@@ -96,7 +92,7 @@ def visualizeFit():
 def findLaneMarking(filename):
     img = cv2.imread(filename)
     kernel = np.ones((10,10),np.uint8)
-    dilation = cv2.dilate(img, kernel, iterations=3)
+    dilation = cv2.dilate(img, kernel, iterations=1)
     # cv2.imwrite('dialtion.jpg', dilation)
     # dilation = cv2.imread('perfect.jpg')
 
@@ -107,19 +103,19 @@ def findLaneMarking(filename):
     # print(contours, hierarchy)
     # cv2.imwrite('im2.jpg', dilation)
 
-    edges = cv2.Canny(dilation,0,250,apertureSize = 3)
-    cv2.imwrite('edges.jpg', edges)
-    lines = cv2.HoughLines(edges,1,np.pi/180,50)
-    for rho,theta in lines[0]:
-        a = np.cos(theta)
-        b = np.sin(theta)
-        x0 = a*rho
-        y0 = b*rho
-        x1 = int(x0 + 1000*(-b))
-        y1 = int(y0 + 1000*(a))
-        x2 = int(x0 - 1000*(-b))
-        y2 = int(y0 - 1000*(a))
+    # edges = cv2.Canny(dilation,0,250,apertureSize = 3)
+    # cv2.imwrite('edges.jpg', edges)
+    # lines = cv2.HoughLines(edges,1,np.pi/180,50)
+    # for rho,theta in lines[0]:
+    #     a = np.cos(theta)
+    #     b = np.sin(theta)
+    #     x0 = a*rho
+    #     y0 = b*rho
+    #     x1 = int(x0 + 1000*(-b))
+    #     y1 = int(y0 + 1000*(a))
+    #     x2 = int(x0 - 1000*(-b))
+    #     y2 = int(y0 - 1000*(a))
 
-        cv2.line(dilation,(x1,y1),(x2,y2),(0,0,255),2)
+    #     cv2.line(dilation,(x1,y1),(x2,y2),(0,0,255),2)
 
     cv2.imwrite('houghlines3.jpg',dilation)

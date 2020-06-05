@@ -51,49 +51,51 @@ def transPoints():
         points = np.array(points)[:,:]
         np.savetxt('points_rgb.txt', points)
 
+def enu_to_cc(e, n, u):
+    qs, qx, qy, qz = 0.362114, 0.374050, 0.592222, 0.615007 # Camera parameters
+
+    P = [n,e,-u]
+    Rq = [
+            [1-2*qy**2-2*qz**2 , 2*qx*qy+2*qs*qz   , 2*qx*qz-2*qs*qy],
+            [2*qx*qy-2*qs*qz   , 1-2*qx**2-2*qz**2 , 2*qy*qz+2*qs*qx],
+            [2*qx*qz+2*qs*qy   , 2*qy*qz-2*qs*qx   , 1-2*qx**2-2*qy**2]
+        ]
+    x_c = np.dot(Rq,P)[0]
+    y_c = np.dot(Rq,P)[1]
+    z_c = np.dot(Rq,P)[2]
+
+    return x_c, y_c, z_c
+
+def cc_to_ic(x_c, y_c, z_c):
+    resolution = 2048
+    global x_i
+    global y_i
+    global direction
+    # front
+    if z_c > 0 and z_c > abs(x_c) and z_c > abs(y_c):
+        x_i = int(y_c/z_c*(resolution - 1)/2+(resolution + 1)/2)
+        y_i = int(x_c/z_c*(resolution - 1)/2+(resolution + 1)/2)
+        direction = 1
+    # back
+    if z_c < 0 and z_c < -abs(x_c) and z_c < -abs(y_c):
+        x_i = int(-y_c/z_c*(resolution - 1)/2+(resolution + 1)/2)
+        y_i = int(x_c/z_c*(resolution - 1)/2+(resolution + 1)/2)
+        direction = 2
+    # left
+    if x_c < 0 and x_c < -abs(z_c) and x_c < -abs(y_c):
+        x_i = int(-y_c/x_c*(resolution - 1)/2+(resolution + 1)/2)
+        y_i = int(-z_c/x_c*(resolution - 1)/2+(resolution + 1)/2)
+        direction = 3
+    # right
+    if x_c > 0 and x_c > abs(y_c) and x_c > abs(z_c):
+        x_i = int(y_c/x_c*(resolution - 1)/2+(resolution + 1)/2)
+        y_i = int(-z_c/x_c*(resolution - 1)/2+(resolution + 1)/2)
+        direction = 4
+
+    return x_i, y_i, direction
+
 def drawPoints():
     resolution = 2048
-    def enu_to_cc(e, n, u):
-        qs, qx, qy, qz = 0.362114, 0.374050, 0.592222, 0.615007 # Camera parameters
-
-        P = [n,e,-u]
-        Rq = [
-                [1-2*qy**2-2*qz**2 , 2*qx*qy+2*qs*qz   , 2*qx*qz-2*qs*qy],
-                [2*qx*qy-2*qs*qz   , 1-2*qx**2-2*qz**2 , 2*qy*qz+2*qs*qx],
-                [2*qx*qz+2*qs*qy   , 2*qy*qz-2*qs*qx   , 1-2*qx**2-2*qy**2]
-            ]
-        x_c = np.dot(Rq,P)[0]
-        y_c = np.dot(Rq,P)[1]
-        z_c = np.dot(Rq,P)[2]
-
-        return x_c, y_c, z_c
-
-    def cc_to_ic(x_c, y_c, z_c):
-        global x_i
-        global y_i
-        global direction
-        # front
-        if z_c > 0 and z_c > abs(x_c) and z_c > abs(y_c):
-            x_i = int(y_c/z_c*(resolution - 1)/2+(resolution + 1)/2)
-            y_i = int(x_c/z_c*(resolution - 1)/2+(resolution + 1)/2)
-            direction = 1
-        # back
-        if z_c < 0 and z_c < -abs(x_c) and z_c < -abs(y_c):
-            x_i = int(-y_c/z_c*(resolution - 1)/2+(resolution + 1)/2)
-            y_i = int(x_c/z_c*(resolution - 1)/2+(resolution + 1)/2)
-            direction = 2
-        # left
-        if x_c < 0 and x_c < -abs(z_c) and x_c < -abs(y_c):
-            x_i = int(-y_c/x_c*(resolution - 1)/2+(resolution + 1)/2)
-            y_i = int(-z_c/x_c*(resolution - 1)/2+(resolution + 1)/2)
-            direction = 3
-        # right
-        if x_c > 0 and x_c > abs(y_c) and x_c > abs(z_c):
-            x_i = int(y_c/x_c*(resolution - 1)/2+(resolution + 1)/2)
-            y_i = int(-z_c/x_c*(resolution - 1)/2+(resolution + 1)/2)
-            direction = 4
-
-        return x_i, y_i, direction
 
     data = open('lane_marking_int.txt', 'rb')
 

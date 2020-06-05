@@ -12,5 +12,9 @@ if __name__ == "__main__":
     # drawPoints()
     # findLaneMarking('back_equ.png')
     # clusterLaneMarking('lane_marking_int.txt')
-    fitLaneMarking('lane_marking_int.txt')
-    visualizeFit()
+    # fitLaneMarking('lane_marking_int.txt')
+    # visualizeFit()
+
+    x_c, y_c, z_c = enu_to_cc(937.0089799531036, 1775.5955312868261, -2.52)
+    x_i, y_i, direction = cc_to_ic(x_c, y_c, z_c)
+    print(cc_to_ic(enu_to_cc()))
