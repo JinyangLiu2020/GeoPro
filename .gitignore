@@ -3,6 +3,7 @@
 *.history
 **/*.csv
 **/*.xlsx
+/test
 .vs
 /data/*.rar
 ../**
