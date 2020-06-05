@@ -15,6 +15,22 @@ if __name__ == "__main__":
     # fitLaneMarking('lane_marking_int.txt')
     # visualizeFit()
 
+    x_c, y_c, z_c = enu_to_cc(-937.0089799531036, -1775.5955312868261, -2.52)
+    x_i, y_i, direction = cc_to_ic(x_c, y_c, z_c)
+    print(x_i, y_i, direction)
+
+    back = cv2.imread('back.png')
+    for i in range(1035, 1055):
+        for j in range(1025, 1045):
+            back[i, j] = [0, 0, 255]
+    cv2.imwrite('back_inter.png', back)
+
     x_c, y_c, z_c = enu_to_cc(937.0089799531036, 1775.5955312868261, -2.52)
     x_i, y_i, direction = cc_to_ic(x_c, y_c, z_c)
-    print(cc_to_ic(enu_to_cc()))
+    print(x_i, y_i, direction)
+
+    back = cv2.imread('front.png')
+    for i in range(995, 1015):
+        for j in range(1025, 1045):
+            back[i, j] = [0, 0, 255]
+    cv2.imwrite('front_inter.png', back)
