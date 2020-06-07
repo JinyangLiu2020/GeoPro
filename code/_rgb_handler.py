@@ -4,14 +4,30 @@ import numpy as np
 def find_lane_marking(file_path, size = (512,512)):
     img = cv2.imread(file_path)
     hsv = cv2.resize(cv2.cvtColor(img,cv2.COLOR_BGR2HSV), size)
-    lower_white, upper_white = np.array([0, 0, 205]), np.array([180, 90, 255])
+    h,s,v = cv2.split(hsv)
+    cv2.imshow('h',h)
+    cv2.waitKey()
+    cv2.imshow('s',s)
+    cv2.waitKey()
+    cv2.imshow('v',v)
+    cv2.waitKey()
+    #lower_white, upper_white = np.array([0, 0, 205]), np.array([180, 90, 255])
+    lower_white, upper_white = np.array([0, 0, 205]), np.array([255, 90, 255])
     mask = cv2.inRange(hsv, lower_white, upper_white)
-
+    cv2.imshow('img',mask*256)
+    cv2.waitKey()
+    for i in range(size[0]):
+        for j in range(size[1]):
+            if(i<size[0]*0.65 or i>1*size[0]):
+                mask[i,j] = 0
+    '''
     for i in range(size[0]):
         for j in range(size[1]):
             if(i<size[0]/2 or i+0.4*j-size[0]/2*1.4<0 or i-0.4*j -size[0]/2*0.6<0 or i>1*size[0]):
                 mask[i,j] = 0
-
+    '''
+    cv2.imshow('img',mask*256)
+    cv2.waitKey()
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3,3))
     mask = cv2.dilate(cv2.erode(mask,kernel),kernel)
     mask = cv2.dilate(mask,kernel)
@@ -63,12 +79,39 @@ def find_collineation(lanes,pics):
                 lines.append([long_lines[i]])
     return lines
 
-mask = find_lane_marking('.\\data\\image\\back.jpg',(1024,1024))
-cv2.imwrite('mask_back.png',mask*256)
+mask = find_lane_marking('.\\data\\image\\left.jpg',(1024,1024))
+#cv2.imwrite('mask_right.png',mask*256)
+
+cv2.imshow('img',mask)
+cv2.waitKey()
+#img = cv2.cvtColor(mask*256, cv2.COLOR_GRAY2RGB)
+img = mask
+img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+cv2.imshow('img',img)
+cv2.waitKey()
+#right:(0,1251);(2047,1316)
+#start = (1,1251//2 )
+#end = (1023,1316//2)
+#left (0,1513);(2047,1489)
+start = (1,1513//2 )
+end = (1023,1489//2)
+
+#back:1043;1049
+#start = (521,524)
+#end1 = (843,965)
+#end2 = (127,1024)
+point_color = (0, 0, 255) # BGR
+thickness = 2
+lineType = 4
+cv2.line(img, start, end, point_color, thickness, lineType)
+cv2.imshow('img',img)
+cv2.waitKey()
+cv2.imwrite('left_rgb_match.png',img)
+
 cv2.waitKey()
 
+'''
 lanes,pics = find_lanes(mask)
-
 img = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB);
 for i in range(len(lanes)):
     print(lanes[i])
@@ -95,6 +138,7 @@ cv2.line(img, start, end1, point_color, thickness, lineType)
 cv2.line(img, start, end2, point_color, thickness, lineType)
 #cv2.imwrite('front_rgb_match.png',img)
 #cv2.waitKey()
+'''
 '''
 lines = find_collineation(lanes,pics)
 for i in range(len(lines)):
