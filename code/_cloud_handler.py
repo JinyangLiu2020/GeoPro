@@ -106,8 +106,8 @@ def fitRGBLeftRight(filename):
     ransac.fit(x, y)
     inlier_mask = ransac.inlier_mask_
     outlier_mask = ~inlier_mask
-    x_i = x[inlier_mask]
-    y_i = y[inlier_mask]
+    x_i = x[outlier_mask]
+    y_i = y[outlier_mask]
     valid_row = x_i.shape[0]
 
     regr = linear_model.LinearRegression()
