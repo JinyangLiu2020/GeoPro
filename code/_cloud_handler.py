@@ -89,6 +89,22 @@ def visualizeFit():
     plt.scatter(x, y)
     plt.show()
 
+def fitRGBLeftRight(filename):
+    img = cv2.imread(filename, 0)
+    x, y = [], []
+    rows, cols = img.shape
+    for i in range(rows):
+        for j in range(cols):
+            if img[i,j]!=0:
+                x.append(i)
+                y.append(j)
+    from sklearn import linear_model
+    regr = linear_model.LinearRegression()
+    regr.fit(np.array(y).reshape(len(x), 1), np.array(x).reshape(len(y), 1))
+    c = regr.coef_[0][0]
+    i = regr.intercept_[0]
+    print(c,i)
+
 def findLaneMarking(filename):
     img = cv2.imread(filename)
     kernel = np.ones((10,10),np.uint8)
