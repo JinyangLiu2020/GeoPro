@@ -1,7 +1,12 @@
 Cloud Points
-back 1045 1034
-front 1006 1034
+    back 1045 1034
+    front 1006 1034
+    right:
+        0, 1264
+        2048, 1313
+    left:
+
 
 RGB
-front:1044 986
-back:1043 1049
+    front 1044 986
+    back  1043 1049

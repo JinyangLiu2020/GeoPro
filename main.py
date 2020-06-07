@@ -7,7 +7,7 @@ from code._cloud_handler import *
 from code._transform import *
 
 if __name__ == "__main__":
-    fitRGBLeftRight('tmp/right.png')
+    fitRGBLeftRight('tmp/left.png')
     # transPoints()
     # threshold(226, 100, 2)
     # drawPoints()

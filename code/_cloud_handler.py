@@ -98,9 +98,20 @@ def fitRGBLeftRight(filename):
             if img[i,j]!=0:
                 x.append(i)
                 y.append(j)
+    x = np.array(x).reshape(-1, 1)
+    y = np.array(y).reshape(-1, 1)
+
     from sklearn import linear_model
+    ransac = linear_model.RANSACRegressor(residual_threshold=2)
+    ransac.fit(x, y)
+    inlier_mask = ransac.inlier_mask_
+    outlier_mask = ~inlier_mask
+    x_i = x[inlier_mask]
+    y_i = y[inlier_mask]
+    valid_row = x_i.shape[0]
+
     regr = linear_model.LinearRegression()
-    regr.fit(np.array(y).reshape(len(x), 1), np.array(x).reshape(len(y), 1))
+    regr.fit(y_i, x_i)
     c = regr.coef_[0][0]
     i = regr.intercept_[0]
     print(c,i)
