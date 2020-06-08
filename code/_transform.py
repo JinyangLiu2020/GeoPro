@@ -97,7 +97,7 @@ def cc_to_ic(x_c, y_c, z_c):
 def drawPoints():
     resolution = 2048
 
-    data = open('lane_marking_int.txt', 'rb')
+    data = open('tmp/lane_marking_int.txt', 'rb')
 
     Img_front = np.zeros((resolution,resolution))
     Img_back = np.zeros((resolution,resolution))
@@ -128,26 +128,26 @@ def drawPoints():
             Img_right[x_i][y_i] = 255
             Img_right_with_intensity[x_i][y_i] = intensity
 
-    cv2.imwrite('front.png',Img_front)
-    cv2.imwrite('back.png',Img_back)
-    cv2.imwrite('right.png',Img_right)
-    cv2.imwrite('left.png',Img_left)
-    cv2.imwrite('front_with_intensity.png',Img_front_with_intensity)
-    cv2.imwrite('back_with_intensity.png',Img_back_with_intensity)
-    cv2.imwrite('right_with_intensity.png',Img_right_with_intensity)
-    cv2.imwrite('left_with_intensity.png',Img_left_with_intensity)
+    cv2.imwrite('tmp/front.png',Img_front)
+    cv2.imwrite('tmp/back.png',Img_back)
+    cv2.imwrite('tmp/right.png',Img_right)
+    cv2.imwrite('tmp/left.png',Img_left)
+    cv2.imwrite('tmp/front_with_intensity.png',Img_front_with_intensity)
+    cv2.imwrite('tmp/back_with_intensity.png',Img_back_with_intensity)
+    cv2.imwrite('tmp/right_with_intensity.png',Img_right_with_intensity)
+    cv2.imwrite('tmp/left_with_intensity.png',Img_left_with_intensity)
 
     # Calculate Histogram Equalization
-    img1 = cv2.imread('front_with_intensity.png',0)
+    img1 = cv2.imread('tmp/front_with_intensity.png',0)
     equ1 = cv2.equalizeHist(img1)
-    img2 = cv2.imread('back_with_intensity.png',0)
+    img2 = cv2.imread('tmp/back_with_intensity.png',0)
     equ2 = cv2.equalizeHist(img2)   
-    img3 = cv2.imread('left_with_intensity.png',0)
+    img3 = cv2.imread('tmp/left_with_intensity.png',0)
     equ3 = cv2.equalizeHist(img3)
-    img4 = cv2.imread('right_with_intensity.png',0)
+    img4 = cv2.imread('tmp/right_with_intensity.png',0)
     equ4 = cv2.equalizeHist(img4)
 
-    cv2.imwrite('front_equ.png',equ1)
-    cv2.imwrite('back_equ.png',equ2)
-    cv2.imwrite('left_equ.png',equ3)
-    cv2.imwrite('right_equ.png',equ4)
+    cv2.imwrite('tmp/front_equ.png',equ1)
+    cv2.imwrite('tmp/back_equ.png',equ2)
+    cv2.imwrite('tmp/left_equ.png',equ3)
+    cv2.imwrite('tmp/right_equ.png',equ4)

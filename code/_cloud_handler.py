@@ -17,13 +17,13 @@ def calDis(x1,y1):
     return min([((x1-p[0])**2+(y1-p[1])**2)**0.5 for p in trajectery])
 
 def threshold(altitude, greyscale, distance):
-    points_int = np.loadtxt('points_int.txt')
+    points_int = np.loadtxt('tmp/points_int.txt')
     lane_markings = []
     for line in points_int:
-        if line[2] < altitude and line[3] > greyscale and calDis(line[0], line[1])<distance:
+        if abs(line[2]) > altitude and line[3] > greyscale and calDis(line[0], line[1])<distance:
             lane_markings.append(line)
     lane_markings = np.array(lane_markings)
-    np.savetxt('lane_marking_int.txt', lane_markings)
+    np.savetxt('tmp/lane_marking_int.txt', lane_markings)
 
 def findLaneMarking(filename):
     img = cv2.imread(filename)
@@ -73,8 +73,8 @@ def fitLaneMarking(filename):
     c = regr.coef_[0][0]
     i = regr.intercept_[0]
     print(c,i)
-    np.savetxt('x',x.reshape(row))
-    np.savetxt('y',y.reshape(row))
+    np.savetxt('tmp/x',x.reshape(row))
+    np.savetxt('tmp/y',y.reshape(row))
     return c, i
 
 def visualizeFit():

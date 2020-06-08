@@ -7,10 +7,10 @@ from code._cloud_handler import *
 from code._transform import *
 
 if __name__ == "__main__":
-    fitRGBLeftRight('tmp/right.png')
+    # fitRGBLeftRight('tmp/right.png')
     # transPoints()
-    # threshold(226, 100, 2)
-    # drawPoints()
+    threshold(2.26, 100, 2)
+    drawPoints()
     # findLaneMarking('back_equ.png')
     # clusterLaneMarking('lane_marking_int.txt')
     # fitLaneMarking('lane_marking_int.txt')

@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
-x = np.loadtxt('x')
-y = np.loadtxt('y')
+x = np.loadtxt('tmp/x')
+y = np.loadtxt('tmp/y')
 
 intercetion = [937.0089799531036, 1775.5955312868261]
 
